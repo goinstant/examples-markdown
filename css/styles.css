@@ -1,5 +1,15 @@
+html, body {
+  border: none;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 #content-container {
+  box-sizing: border-box;
+  height: 100%;
   margin: auto;
+  padding-bottom: 45px;
 }
 
 #ace-container {
@@ -13,6 +23,6 @@
   box-sizing: border-box;
   display: inline-block;
   float: left;
-  height: 600px;
+  height: 100%;
   width: 50%;
 }
