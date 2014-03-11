@@ -5,9 +5,14 @@
 #ace-container {
 }
 
+#markdown-container {
+  overflow: auto;
+}
+
 #ace-container, #markdown-container {
-  float: left;
+  box-sizing: border-box;
   display: inline-block;
+  float: left;
   height: 600px;
   width: 50%;
 }
