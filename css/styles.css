@@ -1,6 +1,13 @@
-#ace-container {
-  border: 1px solid #ccc;
-  height: 600px;
+#content-container {
   margin: auto;
-  width: 800px;
+}
+
+#ace-container {
+}
+
+#ace-container, #markdown-container {
+  float: left;
+  display: inline-block;
+  height: 600px;
+  width: 50%;
 }
