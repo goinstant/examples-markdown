@@ -2,6 +2,7 @@ $(document).ready(function() {
   var AceRange = require('ace/range').Range;
   var GOINSTANT_URL = 'https://goinstant.net/stypi/markdown';
 
+
   /*** Helpers ***/
   var indexToPosition = function(editSession, index) {
     var lines = editSession.getValue().split('\n');
@@ -24,6 +25,7 @@ $(document).ready(function() {
     }
     return index + position.column;
   };
+
 
   /*** Initialization ***/
   var initEditor = function() {
@@ -111,15 +113,21 @@ $(document).ready(function() {
   };
 
   var initUserList = function(room) {
+    var userColors = new goinstant.widgets.UserColors({ room: room });
     var userList = new goinstant.widgets.UserList({
-      room: room,
       collapsed: true,
-      position: 'right'
+      position: 'right',
+      room: room
+    });
+
+    userColors.choose(function(err, color) {
+      if (err) console.error('User color selection error', err);
     });
     userList.initialize(function(err) {
       if (err) console.error('User list initialization error', err);
     });
   };
+
 
   /*** Main ***/
   var room = initRoom();
