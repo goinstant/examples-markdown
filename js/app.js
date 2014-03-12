@@ -21,58 +21,67 @@ $(document).ready(function() {
   };
 
   var initTextSync = function(room, editSession) {
-    var text = room.text('text');
-    var ignoreChanges = false;
+    var ot = room.text('text');
+    var onLocalChange = false;
 
     editSession.on('change', function(change) {
-      if (ignoreChanges) return;
-      console.log('ace change', change);
-      if (change.data.action == 'insertText') {
-        var index = positionToIndex(editSession, change.data.range.start);
-        console.log('sending insert', index, change.data.text);
-        text.insert({
+      if (onLocalChange) return;
+      change = change.data;
+      if (change.action=== 'insertText' || change.action === 'insertLines') {
+        var index = positionToIndex(editSession, change.range.start);
+        var text = change.action === 'insertText' ? change.text : change.lines.join('\n') + '\n';
+        var operation = {
           index: index,
-          text: change.data.text
+          text: text
+        };
+        console.info('Sending insert', operation);
+        ot.insert(operation, function(err) {
+          if (err) console.error('Insert error', err);
         });
-      } else if (change.data.action == 'removeText') {
-        var startIndex = positionToIndex(editSession, change.data.range.start);
-        var endIndex = positionToIndex(editSession, change.data.range.end);
-        console.log('sending delete', startIndex, endIndex - startIndex);
-        text.delete({
-          index: startIndex,
-          length: endIndex - startIndex
+      } else if (change.action === 'removeText' || change.action === 'removeLines') {
+        var index = positionToIndex(editSession, change.range.start);
+        var text = change.action === 'removeText' ? change.text : change.lines.join('\n') + '\n';
+        var operation = {
+          index: index,
+          length: text.length
+        };
+        console.info('Sending delete', operation);
+        ot.delete(operation, function(err) {
+          if (err) console.error('Delete error', err);
         });
       }
     });
 
-    text.on('insert', function(operation) {
-      console.log('got insert', operation);
+    ot.on('insert', function(operation) {
+      console.info('Received insert', operation);
       var position = indexToPosition(editSession, operation.index);
-      ignoreChanges = true;
+      onLocalChange = true;
       editSession.insert(position, operation.text);
-      ignoreChanges = false;
+      onLocalChange = false;
     });
 
-    text.on('delete', function(operation) {
-      console.log('got delete', operation);
+    ot.on('delete', function(operation) {
+      console.info('Received delete', operation);
       var startPosition = indexToPosition(editSession, operation.index);
       var endPosition = indexToPosition(editSession, operation.index + operation.length);
       var range = new AceRange(startPosition.row, startPosition.column, endPosition.row, endPosition.column);
-      ignoreChanges = true;
+      onLocalChange = true;
       editSession.remove(range);
-      ignoreChanges = false;
+      onLocalChange = false;
     });
   };
 
   var indexToPosition = function(editSession, index) {
     var lines = editSession.getValue().split('\n');
-    for (var row in lines) {
+    var row;
+    for (row = 0; row < lines.length; row += 1) {
       if (index <= lines[row].length) {
-        return { row: row, column: index };
+        break;
       } else {
         index -= (lines[row].length + 1);   // +1 for newline
       }
     }
+    return { row: row, column: index };
   };
 
   var positionToIndex = function(editSession, position) {
@@ -86,7 +95,6 @@ $(document).ready(function() {
 
   var room = 'global';
   goinstant.connect(GOINSTANT_URL, { room: room }, function(err, conn, room) {
-    console.log('connected!')
     if (err) return console.error(err);
 
     var editSession = initEditor();
