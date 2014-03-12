@@ -2,6 +2,30 @@ $(document).ready(function() {
   var AceRange = require('ace/range').Range;
   var GOINSTANT_URL = 'https://goinstant.net/stypi/markdown';
 
+  /*** Helpers ***/
+  var indexToPosition = function(editSession, index) {
+    var lines = editSession.getValue().split('\n');
+    var row;
+    for (row = 0; row < lines.length; row += 1) {
+      if (index <= lines[row].length) {
+        break;
+      } else {
+        index -= (lines[row].length + 1);   // +1 for newline
+      }
+    }
+    return { row: row, column: index };
+  };
+
+  var positionToIndex = function(editSession, position) {
+    var lines = editSession.getValue().split('\n');
+    var index = 0;
+    for (var i = 0; i < position.row; i += 1) {
+      index += lines[i].length + 1;  // +1 for newline
+    }
+    return index + position.column;
+  };
+
+  /*** Initialization ***/
   var initEditor = function() {
     var editor = ace.edit('ace-container');
     editor.setTheme('ace/theme/monokai');
@@ -33,7 +57,7 @@ $(document).ready(function() {
       document.location.reload();
     });
     return room;
-  }
+  };
 
   var initTextSync = function(room, editSession) {
     var ot = room.text('text');
@@ -86,28 +110,18 @@ $(document).ready(function() {
     });
   };
 
-  var indexToPosition = function(editSession, index) {
-    var lines = editSession.getValue().split('\n');
-    var row;
-    for (row = 0; row < lines.length; row += 1) {
-      if (index <= lines[row].length) {
-        break;
-      } else {
-        index -= (lines[row].length + 1);   // +1 for newline
-      }
-    }
-    return { row: row, column: index };
+  var initUserList = function(room) {
+    var userList = new goinstant.widgets.UserList({
+      room: room,
+      collapsed: true,
+      position: 'right'
+    });
+    userList.initialize(function(err) {
+      if (err) console.error('User list initialization error', err);
+    });
   };
 
-  var positionToIndex = function(editSession, position) {
-    var lines = editSession.getValue().split('\n');
-    var index = 0;
-    for (var i = 0; i < position.row; i += 1) {
-      index += lines[i].length + 1;  // +1 for newline
-    }
-    return index + position.column;
-  };
-
+  /*** Main ***/
   var room = initRoom();
 
   goinstant.connect(GOINSTANT_URL, { room: room }, function(err, conn, room) {
@@ -116,5 +130,6 @@ $(document).ready(function() {
     var editSession = initEditor();
     initMarkdown(editSession);
     initTextSync(room, editSession);
+    initUserList(room);
   });
 });
