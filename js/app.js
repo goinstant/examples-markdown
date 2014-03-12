@@ -1,6 +1,6 @@
 $(document).ready(function() {
   var AceRange = require('ace/range').Range;
-  var GOINSTANT_URL = 'https://local.goinstant.org/goinstant-test/default';
+  var GOINSTANT_URL = 'https://goinstant.net/stypi/markdown';
 
   var initEditor = function() {
     var editor = ace.edit('ace-container');
