@@ -20,6 +20,21 @@ $(document).ready(function() {
     });
   };
 
+  var initRoom = function() {
+    var room = window.location.hash.slice(1);
+    if (!room || !room.match(/^room-/)) {
+      room = 'room-';
+      for(var i = 0; i < 6; i += 1) {
+        room += Math.floor(Math.random() * 36).toString(36);
+      }
+      window.location.hash = room;
+    }
+    $(window).on('hashchange', function() {
+      document.location.reload();
+    });
+    return room;
+  }
+
   var initTextSync = function(room, editSession) {
     var ot = room.text('text');
     var onLocalChange = false;
@@ -93,7 +108,8 @@ $(document).ready(function() {
     return index + position.column;
   };
 
-  var room = 'global';
+  var room = initRoom();
+
   goinstant.connect(GOINSTANT_URL, { room: room }, function(err, conn, room) {
     if (err) return console.error(err);
 
