@@ -26,3 +26,10 @@ html, body {
   height: 100%;
   width: 50%;
 }
+
+#ace-container .cursor {
+  display: none;
+  margin-left: -1px;
+  position: absolute;
+  width: 2px;
+}

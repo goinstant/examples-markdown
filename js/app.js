@@ -1,6 +1,7 @@
 $(document).ready(function() {
-  var AceRange = require('ace/range').Range;
+  var AceRange = ace.require('ace/range').Range;
   var GOINSTANT_URL = 'https://goinstant.net/stypi/markdown';
+  var cursors = {};
 
 
   /*** Helpers ***/
@@ -26,8 +27,49 @@ $(document).ready(function() {
     return index + position.column;
   };
 
+  var setCursor = function(userId, position, editSession, room) {
+    if (cursors[userId]) {
+      editSession.removeMarker(cursors[userId]);
+    }
+    var range = new AceRange(position.row, position.column, position.row, position.column + 1);
+    var userClass = userId.replace(/\W/g, '-');
+    cursors[userId] = editSession.addMarker(range, 'cursor ' + userClass, 'text', true);
+    // Assumes Ace render function will fire before .get() returns
+    room.user(userId).get(function(err, user) {
+      $('.cursor.' + userClass).css({
+        backgroundColor: user.avatarColor,
+        display: 'block',
+        width: '2px'
+      });
+    });
+  };
+
 
   /*** Initialization ***/
+  var initCursorSync = function(editSession, room) {
+    var cursorChannel = room.channel('cursors');
+    var textChanged = false;   // Used to figure out if text change causes cursor change
+    room.on('leave', function(user) {
+      editSession.removeMarker(cursors[user.id]);
+    });
+    cursorChannel.on('message', function(position, context) {
+      setCursor(context.userId, position, editSession, room);
+    });
+    editSession.on('change', function() {
+      textChanged = true;
+    });
+    editSession.selection.on('changeCursor', function() {
+      if (textChanged) {
+        textChanged = false;
+        return;
+      }
+      cursorChannel.message({
+        row: editSession.selection.lead.row,
+        column: editSession.selection.lead.column
+      });
+    });
+  };
+
   var initEditor = function() {
     var editor = ace.edit('ace-container');
     editor.setTheme('ace/theme/monokai');
@@ -139,5 +181,6 @@ $(document).ready(function() {
     initMarkdown(editSession);
     initTextSync(room, editSession);
     initUserList(room);
+    initCursorSync(editSession, room);
   });
 });
