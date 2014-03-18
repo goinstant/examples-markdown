@@ -74,9 +74,11 @@ $(document).ready(function() {
   var initEditor = function() {
     var editor = ace.edit('ace-container');
     editor.setTheme('ace/theme/monokai');
+    editor.setShowPrintMargin(false);
     var session = editor.getSession();
     session.setMode('ace/mode/markdown');
     session.setUseSoftTabs(true);
+    session.setUseWrapMode(true);
     session.doc.setNewLineMode('unix');
     return session;
   };
