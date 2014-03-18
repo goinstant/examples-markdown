@@ -28,6 +28,7 @@ $(document).ready(function() {
   };
 
   var setCursor = function(userId, position, editSession, room) {
+    return;
     if (cursors[userId]) {
       editSession.removeMarker(cursors[userId]);
     }
