@@ -5,6 +5,13 @@ html, body {
   padding: 0;
 }
 
+.github-ribbon {
+  border: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
 #content-container {
   box-sizing: border-box;
   height: 100%;
