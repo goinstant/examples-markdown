@@ -159,9 +159,11 @@ $(document).ready(function() {
 
   var initUserList = function(room) {
     var userColors = new goinstant.widgets.UserColors({ room: room });
+    var userContainer = document.getElementById("user-list");
     var userList = new goinstant.widgets.UserList({
-      collapsed: true,
-      position: 'right',
+      collapsed: false,
+      container: userContainer,
+      truncateLength: 10000,
       room: room
     });
 
@@ -172,7 +174,6 @@ $(document).ready(function() {
       if (err) console.error('User list initialization error', err);
     });
   };
-
 
   /*** Main ***/
   var room = initRoom();
@@ -186,4 +187,17 @@ $(document).ready(function() {
     initUserList(room);
     initCursorSync(editSession, room);
   });
+
+  function addShareButton(text) {
+    var shareBtn = document.createElement('div');
+    $(shareBtn).addClass('share-btn');
+
+    shareBtn.innerHTML = '<input id="gi-share-text" type="text" value="' + text + '"/>';
+
+    var shareBtnWrap = $('.invite-a-friend')[0];
+    $(shareBtnWrap).append(shareBtn);
+  }
+
+  addShareButton(document.URL);
+
 });

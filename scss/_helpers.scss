@@ -1,0 +1,33 @@
+/*
+   Helper classes
+   ========================================================================== */
+
+.left  { float: left; }
+.right { float: right; }
+.hide  { display: none; }
+.clear { clear: both; }
+
+/*
+   Breakpoint mixins
+   ========================================================================== */
+
+@mixin max-screen($res) {
+  @media screen and ( max-width: $res )
+  {
+    @content;
+  }
+}
+
+@mixin max-screen-height($res) {
+  @media screen and ( max-height: $res )
+  {
+    @content;
+  }
+}
+
+@mixin min-screen($res) {
+  @media screen and ( min-width: $res )
+  {
+    @content;
+  }
+}

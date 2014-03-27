@@ -1,0 +1,22 @@
+//Site Colors
+$grayLightest:          #f7f7f7;
+$grayLighter:           #e4e5ea;
+$gray:                  #333639;
+$blueLighter:           #7CB7EF;
+$blue:                  #10416f;
+$blueAlt:               #0e6bd2;
+$blueDark:              #18395E;
+$blueLight:             desaturate(lighten($blueAlt, 35%), 50%);
+$navy:                  #14283e;
+$green:                 #44CA00;
+$greenDark:             #369A12;
+$red:                   #A50606;
+$redLight:              #cc2424;
+
+//Fonts
+$font-body:             'proxima-nova', 'proxima-nova-n4', Helvetica, Arial, sans-serif;
+$font-monospace:        'inconsolata', Courier, monospace;
+
+//Borders
+$border-color:          #ccc;
+$border:                2px solid $border-color;

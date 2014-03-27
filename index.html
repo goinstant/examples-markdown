@@ -8,17 +8,33 @@
   <link rel="icon" href="https://goinstant.com/static/img/favicons/favicon.png" />
   <link rel="stylesheet" href="https://cdn.goinstant.net/widgets/user-list/latest/user-list.css" />
   <link rel="stylesheet" href="css/gi-banner.css" />
-  <link rel="stylesheet" href="css/markdown.css" />
-  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/style.css" />
+
+  <script type="text/javascript" src="//use.typekit.net/khl3mdc.js"></script>
+  <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+
 </head>
 <body>
   <a href="https://github.com/goinstant/examples-markdown" title="Fork me on Github" target="_blank">
-    <img class="github-ribbon" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub">
+    <img class="github-ribbon" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub" width="120">
   </a>
 
-  <div id="content-container">
-    <div id="ace-container"></div>
-    <div id="markdown-container"></div>
+  <div class="container">
+    <div class="content">
+      <div class="copy">
+        <h1>Markdown Editor</h1>
+        <p>Collaborate on a <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">markdown</a> document with a friend! This demo uses <a href="#" target="_blank">GoInstant's OT feature</a> to allow for multi-user editing.</p>
+        <span class="label">Give this URL to a friend to collaborate.</span>
+        <div class="invite-a-friend"></div>
+      </div>
+      <div id="user-list">
+        <h2>Connected Users</h2>
+      </div>
+    </div>
+    <div class="editor">
+      <div id="ace-container"></div>
+      <div id="markdown-container"></div>
+    </div>
   </div>
 
   <div id="goinstant-header">
