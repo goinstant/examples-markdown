@@ -1,5 +1,6 @@
 $(document).ready(function() {
   var AceRange = ace.require('ace/range').Range;
+  var editor;
   var GOINSTANT_URL = 'https://goinstant.net/stypi/markdown';
   var cursors = {};
 
@@ -72,7 +73,7 @@ $(document).ready(function() {
   };
 
   var initEditor = function() {
-    var editor = ace.edit('ace-container');
+    editor = ace.edit('ace-container');
     editor.setTheme('ace/theme/monokai');
     editor.setShowPrintMargin(false);
     var session = editor.getSession();
@@ -175,6 +176,16 @@ $(document).ready(function() {
     });
   };
 
+  var addShareButton = function(text) {
+    var shareBtn = document.createElement('div');
+    $(shareBtn).addClass('share-btn');
+
+    shareBtn.innerHTML = '<input id="gi-share-text" type="text" value="' + text + '"/>';
+
+    var shareBtnWrap = $('.invite-a-friend')[0];
+    $(shareBtnWrap).append(shareBtn);
+  }
+
   /*** Main ***/
   var room = initRoom();
 
@@ -186,18 +197,19 @@ $(document).ready(function() {
     initTextSync(room, editSession);
     initUserList(room);
     initCursorSync(editSession, room);
+    addShareButton(document.URL);
+
   });
 
-  function addShareButton(text) {
-    var shareBtn = document.createElement('div');
-    $(shareBtn).addClass('share-btn');
+  $('#full-screen-editor').on('click', function(){
+    $(this).toggleClass('full-screen');
+    $('.editor').toggleClass('full-screen');
 
-    shareBtn.innerHTML = '<input id="gi-share-text" type="text" value="' + text + '"/>';
-
-    var shareBtnWrap = $('.invite-a-friend')[0];
-    $(shareBtnWrap).append(shareBtn);
-  }
-
-  addShareButton(document.URL);
+    function resizeEditor() {
+      editor.resize();
+    }
+    //Timeout to offset CSS transition
+    setTimeout(resizeEditor, 300);
+  });
 
 });

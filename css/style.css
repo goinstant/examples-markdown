@@ -503,7 +503,7 @@ textarea {
   clear: both; }
 
 /*
-   Breakpoint mixins
+   Mixins
    ========================================================================== */
 /* http://kevinburke.bitbucket.org/markdowncss/ */
 #markdown-container {
@@ -611,7 +611,7 @@ textarea {
   margin: 0 auto 0 0;
   color: #999; }
 
-* {
+*, *:before, *:after {
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-font-smoothing: antialiased; }
@@ -629,7 +629,8 @@ body {
   border: 0;
   position: absolute;
   right: 0;
-  top: 0; }
+  top: 0;
+  z-index: 10000; }
 
 .container {
   height: 100%;
@@ -640,7 +641,7 @@ body {
 .content {
   position: relative;
   float: left;
-  width: 25%;
+  width: 22%;
   height: 100%;
   padding-right: 30px; }
   .content h1 {
@@ -689,7 +690,9 @@ body {
   color: #18395e;
   box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.4);
   border-radius: 0 0 3px 3px;
-  transition: all .15s linear; }
+  -webkit-transition: all 0.15s linear;
+  -moz-transition: all 0.15s linear;
+  transition: all 0.15s linear; }
   .invite-a-friend input:focus {
     background-color: white;
     outline: 0;
@@ -733,22 +736,83 @@ body {
 
 .editor {
   float: left;
-  width: 75%;
+  width: 78%;
   height: 100%;
-  box-shadow: 0 0 50px rgba(255, 255, 255, 0.075); }
+  box-shadow: 0 0 50px rgba(255, 255, 255, 0.075);
+  background: #272822;
+  overflow: hidden;
+  border-radius: 4px; }
 
-#ace-container,
+.toggle {
+  position: absolute;
+  bottom: 5px;
+  right: 0;
+  width: 30px;
+  height: 30px;
+  z-index: 10000;
+  cursor: pointer;
+  -webkit-transition: background-color 0.15s linear;
+  -moz-transition: background-color 0.15s linear;
+  transition: background-color 0.15s linear;
+  background: #272822 url("../img/full-screen.png") no-repeat; }
+  @media (min--moz-device-pixel-ratio: 1.3), (-o-min-device-pixel-ratio: 2.6 / 2), (-webkit-min-device-pixel-ratio: 1.3), (min-device-pixel-ratio: 1.3), (min-resolution: 1.3dppx) {
+    .toggle {
+      /* on retina, use image that's scaled by 2 */
+      background-image: url("../img/full-screen@2x.png");
+      background-size: 60px 30px; } }
+  .toggle:hover {
+    background-color: #333; }
+  .toggle.full-screen {
+    background-position: -33px top; }
+    .toggle.full-screen:before {
+      content: "Show preview"; }
+  .toggle:before {
+    display: block;
+    visibility: hidden;
+    position: absolute;
+    height: 30px;
+    right: 30px;
+    padding: 6px 6px 6px 10px;
+    white-space: nowrap;
+    opacity: 0;
+    content: "Expand editor";
+    background: #333;
+    color: #eee;
+    border-radius: 4px 0 0 4px;
+    font-size: 13px;
+    -webkit-transition: all 0.15s linear;
+    -moz-transition: all 0.15s linear;
+    transition: all 0.15s linear;
+    user-select: none; }
+  .toggle:hover:before {
+    visibility: visible;
+    opacity: 1; }
+
+.ace-wrapper,
 #markdown-container {
+  position: relative;
   display: block;
   float: left;
   height: 100%;
-  width: 50%; }
+  width: 50%;
+  -webkit-transition: all 0.3s cubic-bezier(0.77, -0.21, 0.2, 1.285);
+  -moz-transition: all 0.3s cubic-bezier(0.77, -0.21, 0.2, 1.285);
+  transition: all 0.3s cubic-bezier(0.77, -0.21, 0.2, 1.285); }
+
+.editor.full-screen .ace-wrapper {
+  width: 99%; }
+.editor.full-screen #markdown-container {
+  width: 1%;
+  padding: 0; }
+  .editor.full-screen #markdown-container * {
+    font-size: 0; }
 
 #ace-container {
+  height: 100%;
   border-radius: 4px 0 0 4px;
   border: 1px solid #222;
   font-family: "inconsolata", Courier, monospace;
-  font-size: 16px; }
+  font-size: 14px; }
 
 #markdown-container {
   overflow: auto;

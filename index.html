@@ -24,15 +24,16 @@
       <div class="copy">
         <h1>Markdown Editor</h1>
         <p>Collaborate on a <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">markdown</a> document with a friend! This demo uses <a href="#" target="_blank">GoInstant's OT feature</a> to allow for multi-user editing.</p>
-        <span class="label">Give this URL to a friend to collaborate.</span>
-        <div class="invite-a-friend"></div>
       </div>
       <div id="user-list">
         <h2>Connected Users</h2>
       </div>
     </div>
     <div class="editor">
-      <div id="ace-container"></div>
+      <div class="ace-wrapper">
+        <span class="toggle" id="full-screen-editor"></span>
+        <div id="ace-container"></div>
+      </div>
       <div id="markdown-container"></div>
     </div>
   </div>
