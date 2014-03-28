@@ -1,10 +1,29 @@
 $(document).ready(function() {
   var AceRange = ace.require('ace/range').Range;
   var GOINSTANT_URL = 'https://goinstant.net/stypi/markdown';
+  var INITIAL_TEXT = [
+    '# Three Laws\n\n',
+    'These laws form an organizing principle and unifying theme for robot behavior.\n\n',
+    '1. A robot may not **injure** a _human being_ or, through inaction, allow a _human being_ to come to harm.\n',
+    '2. A robot must **obey** the orders given to it by _human beings_, except where such orders would conflict with the [First Law][1].\n',
+    '3. A robot must **protect** its own existence as long as such protection does not conflict with the [First][1] or [Second Law][2].\n\n',
+    '[1]: http://en.wikipedia.org/wiki/Isaac_Asimov\n',
+    '[2]: http://en.wikipedia.org/wiki/Three_Laws_of_Robotics\n'
+  ].join('')
   var cursors = {};
 
 
   /*** Helpers ***/
+  var extractAceText = function(change) {
+    if (change.text) {
+      return change.text;
+    } else if (change.lines) {
+      return change.lines.join('\n') + '\n';
+    } else {
+      return '';
+    }
+  };
+
   var indexToPosition = function(editSession, index) {
     var lines = editSession.getValue().split('\n');
     var row;
@@ -107,53 +126,50 @@ $(document).ready(function() {
   };
 
   var initTextSync = function(room, editSession) {
-    var ot = room.text('text');
     var onLocalChange = false;
+    var ot = room.text('text');
 
-    editSession.on('change', function(change) {
-      if (onLocalChange) return;
-      change = change.data;
-      if (change.action=== 'insertText' || change.action === 'insertLines') {
-        var index = positionToIndex(editSession, change.range.start);
-        var text = change.action === 'insertText' ? change.text : change.lines.join('\n') + '\n';
-        var operation = {
-          index: index,
-          text: text
-        };
-        console.info('Sending insert', operation);
-        ot.insert(operation, function(err) {
-          if (err) console.error('Insert error', err);
-        });
-      } else if (change.action === 'removeText' || change.action === 'removeLines') {
-        var index = positionToIndex(editSession, change.range.start);
-        var text = change.action === 'removeText' ? change.text : change.lines.join('\n') + '\n';
-        var operation = {
-          index: index,
-          length: text.length
-        };
-        console.info('Sending delete', operation);
-        ot.delete(operation, function(err) {
-          if (err) console.error('Delete error', err);
-        });
+    ot.get(function(err, delta, context) {
+      console.info('Got version', context.version);
+
+      editSession.on('change', function(change) {
+        if (onLocalChange) return;
+        var index = positionToIndex(editSession, change.data.range.start);
+        var text = extractAceText(change.data);
+        if (change.data.action === 'insertText' || change.data.action === 'insertLines') {
+          var operation = { index: index, text: text };
+          console.info('Sending insert', operation);
+          ot.insert(operation, function(err) {
+            if (err) console.error('Insert error', err);
+          });
+        } else if (change.data.action === 'removeText' || change.data.action === 'removeLines') {
+          var operation = { index: index, length: text.length };
+          console.info('Sending delete', operation);
+          ot.delete(operation, function(err) {
+            if (err) console.error('Delete error', err);
+          });
+        }
+      });
+
+      ot.on('insert', function(operation) {
+        var position = indexToPosition(editSession, operation.index);
+        onLocalChange = true;
+        editSession.insert(position, operation.text);
+        onLocalChange = false;
+      });
+
+      ot.on('delete', function(operation) {
+        var startPosition = indexToPosition(editSession, operation.index);
+        var endPosition = indexToPosition(editSession, operation.index + operation.length);
+        var range = new AceRange(startPosition.row, startPosition.column, endPosition.row, endPosition.column);
+        onLocalChange = true;
+        editSession.remove(range);
+        onLocalChange = false;
+      });
+
+      if (context.version === 0) {
+        editSession.setValue(INITIAL_TEXT);
       }
-    });
-
-    ot.on('insert', function(operation) {
-      console.info('Received insert', operation);
-      var position = indexToPosition(editSession, operation.index);
-      onLocalChange = true;
-      editSession.insert(position, operation.text);
-      onLocalChange = false;
-    });
-
-    ot.on('delete', function(operation) {
-      console.info('Received delete', operation);
-      var startPosition = indexToPosition(editSession, operation.index);
-      var endPosition = indexToPosition(editSession, operation.index + operation.length);
-      var range = new AceRange(startPosition.row, startPosition.column, endPosition.row, endPosition.column);
-      onLocalChange = true;
-      editSession.remove(range);
-      onLocalChange = false;
     });
   };
 
