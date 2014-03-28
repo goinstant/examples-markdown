@@ -1,6 +1,5 @@
 $(document).ready(function() {
   var AceRange = ace.require('ace/range').Range;
-  var editor;
   var GOINSTANT_URL = 'https://goinstant.net/stypi/markdown';
   var cursors = {};
 
@@ -73,7 +72,7 @@ $(document).ready(function() {
   };
 
   var initEditor = function() {
-    editor = ace.edit('ace-container');
+    var editor = ace.edit('ace-container');
     editor.setTheme('ace/theme/monokai');
     editor.setShowPrintMargin(false);
     var session = editor.getSession();
@@ -81,7 +80,7 @@ $(document).ready(function() {
     session.setUseSoftTabs(true);
     session.setUseWrapMode(true);
     session.doc.setNewLineMode('unix');
-    return session;
+    return editor;
   };
 
   var initMarkdown = function(editSession) {
@@ -184,32 +183,28 @@ $(document).ready(function() {
 
     var shareBtnWrap = $('.invite-a-friend')[0];
     $(shareBtnWrap).append(shareBtn);
-  }
+  };
 
   /*** Main ***/
   var room = initRoom();
+  var editor = initEditor();
+  var editSession = editor.getSession();
+  initMarkdown(editSession);
+  addShareButton(document.URL);
 
   goinstant.connect(GOINSTANT_URL, { room: room }, function(err, conn, room) {
     if (err) return console.error(err);
 
-    var editSession = initEditor();
-    initMarkdown(editSession);
     initTextSync(room, editSession);
     initUserList(room);
     initCursorSync(editSession, room);
-    addShareButton(document.URL);
-
   });
 
   $('#full-screen-editor').on('click', function(){
     $(this).toggleClass('full-screen');
     $('.editor').toggleClass('full-screen');
 
-    function resizeEditor() {
-      editor.resize();
-    }
     //Timeout to offset CSS transition
-    setTimeout(resizeEditor, 300);
+    setTimeout(editor.resize.bind(), 300);
   });
-
 });
