@@ -7,7 +7,7 @@ $editorBackground: #272822;
 
 $bannerHeight: 47px;
 $pagePadding: 40px;
-$small-screen: 1000px;
+$small-screen: 1100px;
 
 
 *, *:before, *:after {
@@ -38,6 +38,7 @@ body {
 .container {
   height: 100%;
   margin: auto;
+  min-width: 960px;
   padding: $pagePadding;
   padding-bottom: $pagePadding + $bannerHeight;
 }
@@ -146,6 +147,14 @@ body {
         padding: 5px 0 1px 9px;
         font-size: 14px;
         font-weight: 500;
+        @include max-screen($small-screen) {
+          width: 65%;
+        }
+        span {
+          display: block;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
       }
       .gi-color {
         &:before { display: none; }
@@ -161,6 +170,9 @@ body {
           font-weight: 600;
           background: $localUser;
           color: white;
+          @include max-screen($small-screen) {
+            width: 65%;
+          }
         }
       }
     }
