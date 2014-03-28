@@ -46,34 +46,51 @@ $(document).ready(function() {
     return index + position.column;
   };
 
-  var setCursor = function(userId, position, editSession, room) {
-    return;
+  var setCursor = function(room, editSession, userId, position) {
+    var userClass = userId.replace(/\W/g, '-');
     if (cursors[userId]) {
-      editSession.removeMarker(cursors[userId]);
+      editSession.removeMarker(cursors[userId].markerId);
+    } else {
+      room.user(userId).get(function(err, user) {
+        var rule = '#ace-container .cursor.' + userClass + ' { background-color: ' + user.avatarColor + '; }';
+        $('<style type="text/css">' + rule + '</style>').appendTo('head');
+      });
     }
     var range = new AceRange(position.row, position.column, position.row, position.column + 1);
-    var userClass = userId.replace(/\W/g, '-');
-    cursors[userId] = editSession.addMarker(range, 'cursor ' + userClass, 'text', true);
-    // Assumes Ace render function will fire before .get() returns
-    room.user(userId).get(function(err, user) {
-      $('.cursor.' + userClass).css({
-        backgroundColor: user.avatarColor,
-        display: 'block',
-        width: '2px'
-      });
-    });
+    var markerId = editSession.addMarker(range, 'cursor ' + userClass, 'text', true);
+    cursors[userId] = {
+      index: positionToIndex(editSession, position),
+      markerId: markerId
+    };
+  };
+
+  var updateCursors = function(room, editSession, userId, index, length) {
+    var position = indexToPosition(editSession, index + Math.max(0, length));
+    // Set author cursor
+    if (userId) {
+      setCursor(room, editSession, userId, position);
+    }
+    // Shift everyone else's cursor
+    for (var id in cursors) {
+      var cursor = cursors[id];
+      if (id === userId || !cursor || cursor.index <= index) {
+        continue;
+      }
+      var newIndex = cursor.index + Math.max(length, index - cursor.index);
+      setCursor(room, editSession, id, indexToPosition(editSession, newIndex));
+    }
   };
 
 
   /*** Initialization ***/
-  var initCursorSync = function(editSession, room) {
+  var initCursorSync = function(room, editSession) {
     var cursorChannel = room.channel('cursors');
     var textChanged = false;   // Used to figure out if text change causes cursor change
     room.on('leave', function(user) {
       editSession.removeMarker(cursors[user.id]);
     });
     cursorChannel.on('message', function(position, context) {
-      setCursor(context.userId, position, editSession, room);
+      setCursor(room, editSession, context.userId, position);
     });
     editSession.on('change', function() {
       textChanged = true;
@@ -142,28 +159,34 @@ $(document).ready(function() {
           ot.insert(operation, function(err) {
             if (err) console.error('Insert error', err);
           });
+          updateCursors(room, editSession, false, index, text.length);
         } else if (change.data.action === 'removeText' || change.data.action === 'removeLines') {
           var operation = { index: index, length: text.length };
           console.info('Sending delete', operation);
           ot.delete(operation, function(err) {
             if (err) console.error('Delete error', err);
           });
+          updateCursors(room, editSession, false, index, -1 * text.length);
         }
       });
 
-      ot.on('insert', function(operation) {
+      ot.on('insert', function(operation, context) {
+        console.info('Got insert', operation);
         var position = indexToPosition(editSession, operation.index);
         onLocalChange = true;
         editSession.insert(position, operation.text);
+        updateCursors(room, editSession, context.userId, operation.index, operation.text.length);
         onLocalChange = false;
       });
 
-      ot.on('delete', function(operation) {
+      ot.on('delete', function(operation, context) {
+        console.info('Got delete', operation);
         var startPosition = indexToPosition(editSession, operation.index);
         var endPosition = indexToPosition(editSession, operation.index + operation.length);
         var range = new AceRange(startPosition.row, startPosition.column, endPosition.row, endPosition.column);
         onLocalChange = true;
         editSession.remove(range);
+        updateCursors(room, editSession, context.userId, operation.index, -1 * operation.length);
         onLocalChange = false;
       });
 
@@ -213,10 +236,10 @@ $(document).ready(function() {
 
     initTextSync(room, editSession);
     initUserList(room);
-    initCursorSync(editSession, room);
+    initCursorSync(room, editSession);
   });
 
-  $('#full-screen-editor').on('click', function(){
+  $('#full-screen-editor').on('click', function() {
     $(this).toggleClass('full-screen');
     $('.editor').toggleClass('full-screen');
 

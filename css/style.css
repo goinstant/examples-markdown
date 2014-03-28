@@ -1,4 +1,4 @@
-/* normalize.css v1.1.2 | MIT License | git.io/normalize */
+/*! normalize.css v1.1.2 | MIT License | git.io/normalize */
 /* ==========================================================================
    HTML5 display definitions
    ========================================================================== */
@@ -813,15 +813,13 @@ body {
   border: 1px solid #222;
   font-family: "inconsolata", Courier, monospace;
   font-size: 14px; }
+  #ace-container .cursor {
+    margin-left: -1px;
+    position: absolute;
+    width: 2px !important; }
 
 #markdown-container {
   overflow: auto;
   border-left: 0;
   border-radius: 0 4px 4px 0;
   background: white; }
-
-#ace-container .cursor {
-  display: none;
-  margin-left: -1px;
-  position: absolute;
-  width: 2px; }

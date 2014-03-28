@@ -230,16 +230,16 @@ body {
   @include transition(all .3s cubic-bezier(0.770, -0.210, 0.200, 1.285));
 }
 
-  .editor.full-screen {
-    .ace-wrapper {
-      width: 99%;
-    }
-    #markdown-container {
-      width: 1%;
-      padding: 0;
-      * { font-size: 0; }
-    }
+.editor.full-screen {
+  .ace-wrapper {
+    width: 99%;
   }
+  #markdown-container {
+    width: 1%;
+    padding: 0;
+    * { font-size: 0; }
+  }
+}
 
 #ace-container {
   height: 100%;
@@ -247,6 +247,12 @@ body {
   border: 1px solid #222;
   font-family: $font-monospace;
   font-size: 14px;
+
+  .cursor {
+    margin-left: -1px;
+    position: absolute;
+    width: 2px !important;
+  }
 }
 
 #markdown-container {
@@ -254,11 +260,4 @@ body {
   border-left: 0;
   border-radius: 0 4px 4px 0;
   background: white;
-}
-
-#ace-container .cursor {
-  display: none;
-  margin-left: -1px;
-  position: absolute;
-  width: 2px;
 }
