@@ -87,7 +87,10 @@ $(document).ready(function() {
     var cursorChannel = room.channel('cursors');
     var textChanged = false;   // Used to figure out if text change causes cursor change
     room.on('leave', function(user) {
-      editSession.removeMarker(cursors[user.id]);
+      if (cursors[user.id]) {
+        editSession.removeMarker(cursors[user.id].markerId);
+        delete cursors[user.id];
+      }
     });
     cursorChannel.on('message', function(position, context) {
       setCursor(room, editSession, context.userId, position);
