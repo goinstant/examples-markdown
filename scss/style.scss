@@ -6,7 +6,7 @@
 $editorBackground: #272822;
 
 $bannerHeight: 47px;
-$pagePadding: 40px;
+$pagePadding: 26px;
 $small-screen: 1100px;
 
 
@@ -25,6 +25,7 @@ body {
   background: $blueDark;
   border-top: 3px solid #4FBA29;
   font-family: $font-body;
+  padding-bottom: $bannerHeight + $pagePadding;
 }
 
 .github-ribbon {
@@ -45,29 +46,14 @@ body {
 
   .content {
     position: relative;
-    float: left;
-    width: 22%;
-    height: 100%;
-    padding-right: 30px;
-
+    margin-bottom: $pagePadding;
+    text-align: center;
 
     h1 {
       margin-top: 0;
       margin-bottom: 5px;
       font-size: 24px;
       font-weight: normal;
-    }
-
-    h2 {
-      margin-bottom: 8px;
-      padding-top: 20px;
-      border-top: 1px solid darken($blueAlt, 12%);
-      border-top: 1px solid fade-out($blueAlt, .7);
-      text-transform: uppercase;
-      font-size: 12px;
-      font-weight: bold;
-      letter-spacing: .05em;
-      color: $blueLight;
     }
 
     p {
@@ -81,21 +67,21 @@ body {
       &:hover { text-decoration: none; }
     }
 
-    span.label {
-      display: block;
-      margin-top: 20px;
-      background: darken($blueDark, 8%);
-      border-radius: 3px 3px 0 0;
-      padding: 5px 10px;
-      width: 100%;
-      font-size: 13px;
-      color: $blueLight;
-      font-weight: bold;
-    }
-
   }
 
   .invite-a-friend {
+    span.label {
+      display: block;
+      width: 100%;
+      margin-top: 20px;
+      padding: 5px 10px;
+      font-size: 13px;
+      text-align: center;
+      border-radius: 3px 3px 0 0;
+      background: darken($blueDark, 8%);
+      color: $blueLight;
+      font-weight: bold;
+    }
     input {
       width: 100%;
       border: 0;
@@ -143,12 +129,12 @@ body {
         }
       }
       .gi-name {
-        width: 75%;
-        padding: 5px 0 1px 9px;
+        width: 65%;
+        padding: 4px 0 1px 9px;
         font-size: 14px;
         font-weight: 500;
         @include max-screen($small-screen) {
-          width: 65%;
+          width: 60%;
         }
         span {
           display: block;
@@ -162,8 +148,8 @@ body {
       &.gi-editing {
         .gi-options input {
           float: left;
-          width: 70%;
-          margin-top: 7px;
+          width: 67%;
+          margin-top: 6px;
           margin-left: 31px;
           padding: 5px 0 1px 10px;
           font-size: 14px;
@@ -171,15 +157,13 @@ body {
           background: $localUser;
           color: white;
           @include max-screen($small-screen) {
-            width: 65%;
+            width: 52%;
           }
         }
       }
     }
 
   .editor {
-    float: left;
-    width: 78%;
     height: 100%;
     box-shadow: 0 0 50px fade-out(white, .925);
     background: $editorBackground;
@@ -232,15 +216,35 @@ body {
     }
   }
 
+  .sidebar {
+    float: left;
+    width: 16%;
+    padding-right: 18px;
+    h2 {
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      text-align: center;
+      font-size: 12px;
+      font-weight: bold;
+      letter-spacing: .05em;
+      color: $blueLight;
+    }
+  }
+
 .ace-wrapper,
 #markdown-container {
   position: relative;
   display: block;
   float: left;
   height: 100%;
-  width: 50%;
   @include transition(all .3s cubic-bezier(0.770, -0.210, 0.200, 1.285));
 }
+
+//Editor/Preview widths
+.ace-wrapper        { width: 57%; }
+#markdown-container { width: 43%; }
+
+//Editor/Preview full screen widths
 
 .editor.full-screen {
   .ace-wrapper {

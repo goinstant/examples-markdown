@@ -1,4 +1,4 @@
-/*! normalize.css v1.1.2 | MIT License | git.io/normalize */
+/* normalize.css v1.1.2 | MIT License | git.io/normalize */
 /* ==========================================================================
    HTML5 display definitions
    ========================================================================== */
@@ -623,7 +623,8 @@ html, body {
 body {
   background: #18395e;
   border-top: 3px solid #4FBA29;
-  font-family: "proxima-nova", "proxima-nova-n4", Helvetica, Arial, sans-serif; }
+  font-family: "proxima-nova", "proxima-nova-n4", Helvetica, Arial, sans-serif;
+  padding-bottom: 73px; }
 
 .github-ribbon {
   border: 0;
@@ -636,30 +637,18 @@ body {
   height: 100%;
   margin: auto;
   min-width: 960px;
-  padding: 40px;
-  padding-bottom: 87px; }
+  padding: 26px;
+  padding-bottom: 73px; }
 
 .content {
   position: relative;
-  float: left;
-  width: 22%;
-  height: 100%;
-  padding-right: 30px; }
+  margin-bottom: 26px;
+  text-align: center; }
   .content h1 {
     margin-top: 0;
     margin-bottom: 5px;
     font-size: 24px;
     font-weight: normal; }
-  .content h2 {
-    margin-bottom: 8px;
-    padding-top: 20px;
-    border-top: 1px solid #0a4e99;
-    border-top: 1px solid rgba(14, 107, 210, 0.3);
-    text-transform: uppercase;
-    font-size: 12px;
-    font-weight: bold;
-    letter-spacing: .05em;
-    color: #b5c8dd; }
   .content p {
     font-size: 15px;
     margin: .25em 0;
@@ -668,17 +657,18 @@ body {
     color: #9ac7f8; }
     .content a:hover {
       text-decoration: none; }
-  .content span.label {
-    display: block;
-    margin-top: 20px;
-    background: #10253d;
-    border-radius: 3px 3px 0 0;
-    padding: 5px 10px;
-    width: 100%;
-    font-size: 13px;
-    color: #b5c8dd;
-    font-weight: bold; }
 
+.invite-a-friend span.label {
+  display: block;
+  width: 100%;
+  margin-top: 20px;
+  padding: 5px 10px;
+  font-size: 13px;
+  text-align: center;
+  border-radius: 3px 3px 0 0;
+  background: #10253d;
+  color: #b5c8dd;
+  font-weight: bold; }
 .invite-a-friend input {
   width: 100%;
   border: 0;
@@ -718,13 +708,13 @@ body {
       .gi-userlist li.gi-local-user + li {
         border: 0; }
   .gi-userlist .gi-name {
-    width: 75%;
-    padding: 5px 0 1px 9px;
+    width: 65%;
+    padding: 4px 0 1px 9px;
     font-size: 14px;
     font-weight: 500; }
     @media screen and (max-width: 1100px) {
       .gi-userlist .gi-name {
-        width: 65%; } }
+        width: 60%; } }
     .gi-userlist .gi-name span {
       display: block;
       overflow: hidden;
@@ -733,8 +723,8 @@ body {
     display: none; }
   .gi-userlist.gi-editing .gi-options input {
     float: left;
-    width: 70%;
-    margin-top: 7px;
+    width: 67%;
+    margin-top: 6px;
     margin-left: 31px;
     padding: 5px 0 1px 10px;
     font-size: 14px;
@@ -743,11 +733,9 @@ body {
     color: white; }
     @media screen and (max-width: 1100px) {
       .gi-userlist.gi-editing .gi-options input {
-        width: 65%; } }
+        width: 52%; } }
 
 .editor {
-  float: left;
-  width: 78%;
   height: 100%;
   box-shadow: 0 0 50px rgba(255, 255, 255, 0.075);
   background: #272822;
@@ -799,16 +787,34 @@ body {
     visibility: visible;
     opacity: 1; }
 
+.sidebar {
+  float: left;
+  width: 16%;
+  padding-right: 18px; }
+  .sidebar h2 {
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    text-align: center;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: .05em;
+    color: #b5c8dd; }
+
 .ace-wrapper,
 #markdown-container {
   position: relative;
   display: block;
   float: left;
   height: 100%;
-  width: 50%;
   -webkit-transition: all 0.3s cubic-bezier(0.77, -0.21, 0.2, 1.285);
   -moz-transition: all 0.3s cubic-bezier(0.77, -0.21, 0.2, 1.285);
   transition: all 0.3s cubic-bezier(0.77, -0.21, 0.2, 1.285); }
+
+.ace-wrapper {
+  width: 57%; }
+
+#markdown-container {
+  width: 43%; }
 
 .editor.full-screen .ace-wrapper {
   width: 99%; }
