@@ -203,7 +203,6 @@ $(document).ready(function() {
     var userColors = new goinstant.widgets.UserColors({ room: room });
     var userContainer = document.getElementById("user-list");
     var userList = new goinstant.widgets.UserList({
-      collapsed: false,
       container: userContainer,
       truncateLength: 10000,
       room: room
