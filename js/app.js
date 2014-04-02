@@ -112,6 +112,7 @@ $(document).ready(function() {
 
   var initEditor = function() {
     var editor = ace.edit('ace-container');
+    editor.commands.removeCommand('gotoline');
     editor.setTheme('ace/theme/monokai');
     editor.setShowPrintMargin(false);
     var session = editor.getSession();
