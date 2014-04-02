@@ -247,6 +247,6 @@ $(document).ready(function() {
     $('.editor').toggleClass('full-screen');
 
     //Timeout to offset CSS transition
-    setTimeout(editor.resize.bind(), 300);
+    setTimeout(editor.resize.bind(editor), 300);
   });
 });
