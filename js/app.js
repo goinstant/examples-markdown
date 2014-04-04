@@ -148,7 +148,7 @@ $(document).ready(function() {
 
   var initTextSync = function(room, editSession) {
     var onLocalChange = false;
-    var ot = room.text('text');
+    var ot = room.ot('text');
 
     ot.get(function(err, delta, context) {
       console.info('Got version', context.version);
