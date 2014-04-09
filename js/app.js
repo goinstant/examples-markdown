@@ -46,14 +46,25 @@ $(document).ready(function() {
     return index + position.column;
   };
 
+  var removeCursor = function(userId) {
+    if (cursors[userId]) {
+      editSession.removeMarker(cursors[userId].markerId);
+      delete cursors[userId];
+    }
+  };
+
   var setCursor = function(room, editSession, userId, position) {
     var userClass = userId.replace(/\W/g, '-');
     if (cursors[userId]) {
       editSession.removeMarker(cursors[userId].markerId);
     } else {
       room.user(userId).get(function(err, user) {
-        var rule = '#ace-container .cursor.' + userClass + ' { background-color: ' + user.avatarColor + '; }';
-        $('<style type="text/css">' + rule + '</style>').appendTo('head');
+        if (user.avatarColor) {
+          var rule = '#ace-container .cursor.' + userClass + ' { background-color: ' + user.avatarColor + '; }';
+          $('<style type="text/css">' + rule + '</style>').appendTo('head');
+        } else {
+          removeCursor(userId);
+        }
       });
     }
     var range = new AceRange(position.row, position.column, position.row, position.column + 1);
@@ -83,33 +94,6 @@ $(document).ready(function() {
 
 
   /*** Initialization ***/
-  var initCursorSync = function(room, editSession) {
-    var cursorChannel = room.channel('cursors');
-    var textChanged = false;   // Used to figure out if text change causes cursor change
-    room.on('leave', function(user) {
-      if (cursors[user.id]) {
-        editSession.removeMarker(cursors[user.id].markerId);
-        delete cursors[user.id];
-      }
-    });
-    cursorChannel.on('message', function(position, context) {
-      setCursor(room, editSession, context.userId, position);
-    });
-    editSession.on('change', function() {
-      textChanged = true;
-    });
-    editSession.selection.on('changeCursor', function() {
-      if (textChanged) {
-        textChanged = false;
-        return;
-      }
-      cursorChannel.message({
-        row: editSession.selection.lead.row,
-        column: editSession.selection.lead.column
-      });
-    });
-  };
-
   var initEditor = function() {
     var editor = ace.edit('ace-container');
     editor.commands.removeCommand('gotoline');
@@ -146,66 +130,92 @@ $(document).ready(function() {
     return room;
   };
 
-  var initTextSync = function(room, editSession) {
-    var onLocalChange = false;
+  var initSync = function(room, editSession) {
     var ot = room.ot('text', function(err, delta, context) {
       console.info('Got version', context.version);
 
-      editSession.on('change', function(change) {
-        if (onLocalChange) return;
-        var index = positionToIndex(editSession, change.data.range.start);
-        var text = extractAceText(change.data);
-        if (change.data.action === 'insertText' || change.data.action === 'insertLines') {
-          var operation = { index: index, text: text };
-          console.info('Sending insert', operation);
-          ot.insert(operation, function(err) {
-            if (err) console.error('Insert error', err);
-          });
-          updateCursors(room, editSession, false, index, text.length);
-        } else if (change.data.action === 'removeText' || change.data.action === 'removeLines') {
-          var operation = { index: index, length: text.length };
-          console.info('Sending delete', operation);
-          ot.delete(operation, function(err) {
-            if (err) console.error('Delete error', err);
-          });
-          updateCursors(room, editSession, false, index, -1 * text.length);
-        }
-      });
-
-      ot.on('insert', function(operation, context) {
-        console.info('Got insert', operation);
-        var position = indexToPosition(editSession, operation.index);
-        onLocalChange = true;
-        editSession.insert(position, operation.text);
-        updateCursors(room, editSession, context.userId, operation.index, operation.text.length);
-        onLocalChange = false;
-      });
-
-      ot.on('delete', function(operation, context) {
-        console.info('Got delete', operation);
-        var startPosition = indexToPosition(editSession, operation.index);
-        var endPosition = indexToPosition(editSession, operation.index + operation.length);
-        var range = new AceRange(startPosition.row, startPosition.column, endPosition.row, endPosition.column);
-        onLocalChange = true;
-        editSession.remove(range);
-        updateCursors(room, editSession, context.userId, operation.index, -1 * operation.length);
-        onLocalChange = false;
-      });
-
       if (context.version === 0) {
         editSession.setValue(INITIAL_TEXT);
+        ot.insert({ index: 0, text: INITIAL_TEXT });
       } else {
-        var existingText;
-        if (delta.ops.length === 0) {
-          existingText = "";
-        } else {
-          existingText = delta.ops[0].value;
+        var texts = [];
+        for (var i in delta.ops) {
+          texts.push(delta.ops[i].value);
         }
-        onLocalChange = true;
-        editSession.setValue(existingText);
-        // XXX: Cursors? get context doesn't contain original authorId
-        onLocalChange = false;
+        editSession.setValue(texts.join(''));
       }
+
+      initSyncCursor(room, editSession);
+      initSyncText(room, ot, editSession);
+    });
+  };
+
+  var initSyncCursor = function(room, editSession) {
+    var cursorChannel = room.channel('cursors');
+    var textChanged = false;   // Used to figure out if text change causes cursor change
+    room.on('leave', function(user) {
+      removeCursor(user.id);
+    });
+    cursorChannel.on('message', function(position, context) {
+      setCursor(room, editSession, context.userId, position);
+    });
+    editSession.on('change', function() {
+      textChanged = true;
+    });
+    editSession.selection.on('changeCursor', function() {
+      if (textChanged) {
+        textChanged = false;
+        return;
+      }
+      cursorChannel.message({
+        row: editSession.selection.lead.row,
+        column: editSession.selection.lead.column
+      });
+    });
+  };
+
+  var initSyncText = function(room, ot, editSession) {
+    var onLocalChange = false;
+
+    editSession.on('change', function(change) {
+      if (onLocalChange) return;
+      var index = positionToIndex(editSession, change.data.range.start);
+      var text = extractAceText(change.data);
+      if (change.data.action === 'insertText' || change.data.action === 'insertLines') {
+        var operation = { index: index, text: text };
+        console.info('Sending insert', operation);
+        ot.insert(operation, function(err) {
+          if (err) console.error('Insert error', err);
+        });
+        updateCursors(room, editSession, false, index, text.length);
+      } else if (change.data.action === 'removeText' || change.data.action === 'removeLines') {
+        var operation = { index: index, length: text.length };
+        console.info('Sending delete', operation);
+        ot.delete(operation, function(err) {
+          if (err) console.error('Delete error', err);
+        });
+        updateCursors(room, editSession, false, index, -1 * text.length);
+      }
+    });
+
+    ot.on('insert', function(operation, context) {
+      console.info('Got insert', operation);
+      var position = indexToPosition(editSession, operation.index);
+      onLocalChange = true;
+      editSession.insert(position, operation.text);
+      updateCursors(room, editSession, context.userId, operation.index, operation.text.length);
+      onLocalChange = false;
+    });
+
+    ot.on('delete', function(operation, context) {
+      console.info('Got delete', operation);
+      var startPosition = indexToPosition(editSession, operation.index);
+      var endPosition = indexToPosition(editSession, operation.index + operation.length);
+      var range = new AceRange(startPosition.row, startPosition.column, endPosition.row, endPosition.column);
+      onLocalChange = true;
+      editSession.remove(range);
+      updateCursors(room, editSession, context.userId, operation.index, -1 * operation.length);
+      onLocalChange = false;
     });
   };
 
@@ -246,9 +256,8 @@ $(document).ready(function() {
   goinstant.connect(GOINSTANT_URL, { room: room }, function(err, conn, room) {
     if (err) return console.error(err);
 
-    initTextSync(room, editSession);
+    initSync(room, editSession);
     initUserList(room);
-    initCursorSync(room, editSession);
   });
 
   $('#full-screen-editor').on('click', function() {
