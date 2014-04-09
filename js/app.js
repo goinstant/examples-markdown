@@ -148,9 +148,7 @@ $(document).ready(function() {
 
   var initTextSync = function(room, editSession) {
     var onLocalChange = false;
-    var ot = room.ot('text');
-
-    ot.get(function(err, delta, context) {
+    var ot = room.ot('text', function(err, delta, context) {
       console.info('Got version', context.version);
 
       editSession.on('change', function(change) {
@@ -196,6 +194,17 @@ $(document).ready(function() {
 
       if (context.version === 0) {
         editSession.setValue(INITIAL_TEXT);
+      } else {
+        var existingText;
+        if (delta.ops.length === 0) {
+          existingText = "";
+        } else {
+          existingText = delta.ops[0].value;
+        }
+        onLocalChange = true;
+        editSession.setValue(existingText);
+        // XXX: Cursors? get context doesn't contain original authorId
+        onLocalChange = false;
       }
     });
   };
