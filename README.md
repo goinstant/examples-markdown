@@ -1,6 +1,6 @@
 # Collaborative Markdown
 
-Write markdown together in real time. See conflicts resolve automatically with GoInstant's [Text API](https://developers.goinstant.com/beta/javascript_api/text/index.html).
+Write markdown together in real time. See conflicts resolve automatically with GoInstant's [OT API](https://developers.goinstant.com/beta/javascript_api/ot/index.html).
 
 ## Built on GoInstant
 
