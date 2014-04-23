@@ -69,6 +69,20 @@ body {
 
   }
 
+  .create-room {
+    margin-bottom: 25px;
+    text-align: center;
+
+    a {
+      background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, #63b8ee), color-stop(1, #468ccf) );
+      border: 1px solid #3866a3;
+      border-radius: 4px;
+      color: #fff;
+      padding: 3px 8px;
+      text-decoration: initial;
+    }
+  }
+
   .invite-a-friend {
     span.label {
       display: block;
