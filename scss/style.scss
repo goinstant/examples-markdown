@@ -70,10 +70,6 @@ body {
   }
 
   .create-room {
-    margin-bottom: 25px;
-    padding-bottom: 25px;
-    border-bottom: 1px solid $blueAlt;
-    border-bottom: 1px solid fade-out($blueAlt, .5);
     a {
       display: block;
       border-radius: 3px;
@@ -84,7 +80,7 @@ body {
       text-align: center;
       text-transform: uppercase;
       text-decoration: none;
-      font-size: 13px;
+      font-size: 12px;
       @include transition();
       &:hover {
         color: $blue;
@@ -95,6 +91,9 @@ body {
 
   .invite-a-friend {
     margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid $blueAlt;
+    border-top: 1px solid fade-out($blueAlt, .5);
     span.label {
       display: block;
       width: 100%;
@@ -109,12 +108,12 @@ body {
       border: 0;
       margin: 0 0 10px;
       padding: 7px 10px;
-      background-color: $navy;
-      background-color: fade-out($navy, .5);
+      background-color: white;
+      background-color: fade-out(white, .2);
       font-size: .8em;
       font-family: $font-body;
       font-weight: 600;
-      color: $blueLight;
+      color: $blue;
       border-radius: 3px;
       @include transition();
       &:focus {

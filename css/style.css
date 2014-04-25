@@ -658,31 +658,29 @@ body {
     .content a:hover {
       text-decoration: none; }
 
-.create-room {
-  margin-bottom: 25px;
-  padding-bottom: 25px;
-  border-bottom: 1px solid #0e6bd2;
-  border-bottom: 1px solid rgba(14, 107, 210, 0.5); }
-  .create-room a {
-    display: block;
-    border-radius: 3px;
-    background: #10253d;
-    color: #b5c8dd;
-    font-weight: bold;
-    padding: 8px;
-    text-align: center;
-    text-transform: uppercase;
-    text-decoration: none;
-    font-size: 13px;
-    -webkit-transition: all 0.15s linear;
-    -moz-transition: all 0.15s linear;
-    transition: all 0.15s linear; }
-    .create-room a:hover {
-      color: #10416f;
-      background: white; }
+.create-room a {
+  display: block;
+  border-radius: 3px;
+  background: #10253d;
+  color: #b5c8dd;
+  font-weight: bold;
+  padding: 8px;
+  text-align: center;
+  text-transform: uppercase;
+  text-decoration: none;
+  font-size: 12px;
+  -webkit-transition: all 0.15s linear;
+  -moz-transition: all 0.15s linear;
+  transition: all 0.15s linear; }
+  .create-room a:hover {
+    color: #10416f;
+    background: white; }
 
 .invite-a-friend {
-  margin-top: 20px; }
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #0e6bd2;
+  border-top: 1px solid rgba(14, 107, 210, 0.5); }
   .invite-a-friend span.label {
     display: block;
     width: 100%;
@@ -696,12 +694,12 @@ body {
     border: 0;
     margin: 0 0 10px;
     padding: 7px 10px;
-    background-color: #14283e;
-    background-color: rgba(20, 40, 62, 0.5);
+    background-color: white;
+    background-color: rgba(255, 255, 255, 0.8);
     font-size: .8em;
     font-family: "proxima-nova", "proxima-nova-n4", Helvetica, Arial, sans-serif;
     font-weight: 600;
-    color: #b5c8dd;
+    color: #10416f;
     border-radius: 3px;
     -webkit-transition: all 0.15s linear;
     -moz-transition: all 0.15s linear;
