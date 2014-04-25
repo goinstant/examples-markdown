@@ -660,45 +660,57 @@ body {
 
 .create-room {
   margin-bottom: 25px;
-  text-align: center; }
+  padding-bottom: 25px;
+  border-bottom: 1px solid #0e6bd2;
+  border-bottom: 1px solid rgba(14, 107, 210, 0.5); }
   .create-room a {
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #63b8ee), color-stop(1, #468ccf));
-    border: 1px solid #3866a3;
-    border-radius: 4px;
-    color: #fff;
-    padding: 3px 8px;
-    text-decoration: initial; }
+    display: block;
+    border-radius: 3px;
+    background: #10253d;
+    color: #b5c8dd;
+    font-weight: bold;
+    padding: 8px;
+    text-align: center;
+    text-transform: uppercase;
+    text-decoration: none;
+    font-size: 13px;
+    -webkit-transition: all 0.15s linear;
+    -moz-transition: all 0.15s linear;
+    transition: all 0.15s linear; }
+    .create-room a:hover {
+      color: #10416f;
+      background: white; }
 
-.invite-a-friend span.label {
-  display: block;
-  width: 100%;
-  margin-top: 20px;
-  padding: 5px 10px;
-  font-size: 13px;
-  text-align: center;
-  border-radius: 3px 3px 0 0;
-  background: #10253d;
-  color: #b5c8dd;
-  font-weight: bold; }
-.invite-a-friend input {
-  width: 100%;
-  border: 0;
-  margin: 0 0 10px;
-  padding: 7px 10px;
-  background-color: rgba(255, 255, 255, 0.9);
-  font-size: .8em;
-  font-family: "proxima-nova", "proxima-nova-n4", Helvetica, Arial, sans-serif;
-  font-weight: 600;
-  color: #18395e;
-  box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.4);
-  border-radius: 0 0 3px 3px;
-  -webkit-transition: all 0.15s linear;
-  -moz-transition: all 0.15s linear;
-  transition: all 0.15s linear; }
-  .invite-a-friend input:focus {
-    background-color: white;
-    outline: 0;
-    box-shadow: 0; }
+.invite-a-friend {
+  margin-top: 20px; }
+  .invite-a-friend span.label {
+    display: block;
+    width: 100%;
+    padding: 5px 10px;
+    font-size: 13px;
+    text-align: center;
+    border-radius: 3px 3px 0 0;
+    font-weight: bold; }
+  .invite-a-friend input {
+    width: 100%;
+    border: 0;
+    margin: 0 0 10px;
+    padding: 7px 10px;
+    background-color: #14283e;
+    background-color: rgba(20, 40, 62, 0.5);
+    font-size: .8em;
+    font-family: "proxima-nova", "proxima-nova-n4", Helvetica, Arial, sans-serif;
+    font-weight: 600;
+    color: #b5c8dd;
+    border-radius: 3px;
+    -webkit-transition: all 0.15s linear;
+    -moz-transition: all 0.15s linear;
+    transition: all 0.15s linear; }
+    .invite-a-friend input:focus {
+      background-color: white;
+      outline: 0;
+      box-shadow: 0;
+      color: #10416f; }
 
 .gi-userlist {
   width: 100%;
@@ -803,13 +815,12 @@ body {
   width: 16%;
   padding-right: 18px; }
   .sidebar h2 {
-    margin-bottom: 8px;
-    text-transform: uppercase;
-    text-align: center;
+    margin-bottom: 5px;
     font-size: 12px;
     font-weight: bold;
-    letter-spacing: .05em;
-    color: #b5c8dd; }
+    color: #81a1c5; }
+  .sidebar #user-list h2 {
+    text-transform: uppercase; }
 
 .ace-wrapper,
 #markdown-container {
