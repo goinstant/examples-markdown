@@ -1,6 +1,6 @@
 $(document).ready(function() {
   var AceRange = ace.require('ace/range').Range;
-  var GOINSTANT_URL = 'https://goinstant.net/stypi/markdown';
+  var GOINSTANT_URL = 'CONNECT_URL_HERE';
   var INITIAL_TEXT = [
     '# Three Laws\n\n',
     'These laws form an organizing principle and unifying theme for robot behavior.\n\n',
